@@ -1,0 +1,56 @@
+<form class="container" method="post" action="/login">
+  <div class="form-group">
+    <label for="materiaId">Id de materia</label>
+    <input id="materiaId" required name="materiaId" placeholder="2"></input>
+  </div>
+
+  <div class="form-group">
+    <label for="calificacion">Calificacion</label>
+    <input id="calificacion" required name="calificacion" placeholder="100" type="number"></input>
+  </div>
+
+  <button type="submit" class="btn btn-default" onclick="sending(event)">Agregar calificacion</button>
+</form>
+
+<div id="cannotAdd" class="alert alert-dismissable" hidden="hidden">
+  <button type="button" class="close" data-dismiss="alert"></button>
+  <p>No se pudo agregar la calificacion</p>
+</div>
+
+<div id="error" class="alert alert-dismissable" hidden="hidden">
+  <button type="button" class="close" data-dismiss="alert"></button>
+  <p>Hubo un error</p>
+</div>
+
+{{#section 'jquery'}}
+<script>
+  function sending(evt){
+		evt.preventDefault(); // Avoid redirection.
+		var action = "/calificacion";
+
+    var calificacion = $('#calificacion').val();
+    var materiaId = $('#materiaId').val();
+		$.ajax({
+			type: 'POST',
+			url: action,
+			dataType: 'json',
+      data: {materiaId: materiaId, calificacion: calificacion},
+
+			success: function(data){
+				if(data.success){
+					window.location.href = "/calificaciones";
+				} else {
+          $('#cannotAdd').show();
+          $('#error').hide();
+				}
+			},
+			error: function(){
+				console.log("ERROR");
+        $('#error').show();
+        $('#cannotAdd').hide();
+			}
+		});
+	}
+</script>
+
+{{/section}}

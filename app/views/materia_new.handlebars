@@ -1,0 +1,56 @@
+<form class="container" method="post" action="/materia">
+  <div class="form-group">
+    <label for="clave">Clave</label>
+    <input id="clave" name="clave" placeholder="TC-2024"></input>
+  </div>
+
+  <div class="form-group">
+    <label for="nombre">Nombre</label>
+    <input id="nombre" name="name" placeholder="Nombre"></input>
+  </div>
+
+  <button type="submit" class="btn btn-default" onclick="sending(event)">Agregar</button>
+</form>
+
+<div id="cannotCreate" class="alert alert-dismissable" hidden="hidden">
+  <button type="button" class="close" data-dismiss="alert"></button>
+  <p>No se pudo dar de alta la materia</p>
+</div>
+
+<div id="error" class="alert alert-dismissable" hidden="hidden">
+  <button type="button" class="close" data-dismiss="alert"></button>
+  <p>There was an error</p>
+</div>
+
+{{#section 'jquery'}}
+<script>
+  function sending(evt){
+		evt.preventDefault(); // Avoid redirection.
+		var action = "/materia";
+
+    var clave = $('#clave').val();
+    var name = $('#nombre').val();
+		$.ajax({
+			type: 'POST',
+			url: action,
+			dataType: 'json',
+      data: {clave: clave, name: name},
+
+			success: function(data){
+				if(data.success){
+					window.location.href = "/";
+				} else {
+          $('#cannotCreate').show();
+          $('#error').hide();
+				}
+			},
+			error: function(){
+				console.log("ERROR");
+        $('#error').show();
+        $('#cannotCreate').hide();
+			}
+		});
+	}
+</script>
+
+{{/section}}

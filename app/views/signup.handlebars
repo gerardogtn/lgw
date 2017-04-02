@@ -1,0 +1,68 @@
+<form class="container" method="post" action="/signup">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input id="name" required name="name" placeholder="Name"></input>
+  </div>
+
+  <div class="form-group">
+    <label for="lastname">Last name</label>
+    <input id="lastname" required name="lastname" placeholder="Last name"></input>
+  </div>
+
+  <div class="form-group">
+    <label for="username">Username</label>
+    <input id="username" required name="username" placeholder="Username"></input>
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input id="password" required name="password" placeholder="Password" type="password"></input>
+  </div>
+
+  <button type="submit" class="btn btn-default" onclick="sending(event)">Sign up</button>
+</form>
+
+<div id="cannot" class="alert alert-dismissable" hidden="hidden">
+  <button type="button" class="close" data-dismiss="alert"></button>
+  <p>Cannot sign up</p>
+</div>
+
+<div id="error" class="alert alert-dismissable" hidden="hidden">
+  <button type="button" class="close" data-dismiss="alert"></button>
+  <p>There was an error</p>
+</div>
+
+{{#section 'jquery'}}
+<script>
+  function sending(evt){
+		evt.preventDefault(); // Avoid redirection.
+		var action = "/signup";
+
+    var name = $('#name').val();
+    var lastname = $('#lastname').val();
+    var username = $('#username').val();
+    var password = $('#password').val();
+		$.ajax({
+			type: 'POST',
+			url: action,
+			dataType: 'json',
+      data: {name: name, lastname:lastname, username: username, password: password},
+
+			success: function(data){
+				if(data.status){
+					window.location.href = "/";
+				} else {
+          $('#cannot').show();
+          $('#error').hide();
+				}
+			},
+			error: function(){
+				console.log("ERROR");
+        $('#error').show();
+        $('#cannot').hide();
+			}
+		});
+	}
+</script>
+
+{{/section}}

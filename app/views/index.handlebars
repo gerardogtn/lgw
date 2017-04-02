@@ -1,0 +1,13 @@
+<div class="container">
+
+  <h1>Bienvenido al sistema de calificaciones</h1>
+
+  {{#if loggedIn}}
+    <a href="/calificaciones" class="btn btn-primary">Ver mis calificaciones</a>
+    <a href="/logout" class="btn btn-primary">Cerrar sesión</a>
+    <a href="/materia/new" class="btn btn-primary">Agregar materia</a>
+  {{else}}
+    <a href="/login" class="btn btn-primary">Login</a>
+    <a href="/signup" class="btn btn-primary">Signup</a>
+  {{/if}}
+</div>

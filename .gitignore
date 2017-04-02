@@ -1,0 +1,8 @@
+# Mac OS files
+.DS_Store
+
+# Configuration files.
+app/config
+
+# Node modules (use npm install)
+node_modules
