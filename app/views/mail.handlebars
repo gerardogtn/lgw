@@ -1,0 +1,61 @@
+<div class="container">
+
+  <div class="row">
+    <p class="col-xs-6 text-left"><strong>From:</strong>&nbsp;{{ email.sender }}</p>
+    <p class="col-xs-6 text-right"><strong>On:</strong>&nbsp;{{ email.date }}</p>
+  </div>
+
+  <p><strong>Subject:</strong>&nbsp;{{ email.subject}}</p>
+
+  <br/>
+
+  <p>{{ email.content }}</p>
+
+  <br/>
+  <br />
+  <div class="btn-group">
+    <a href="/compose?reply={{ email.id}}" class="btn btn-default">Reply</a>
+    <button type="button" class="btn btn-danger"onclick="askDeleteEmail()">Delete</button>
+  </div>
+
+  <br />
+  <br />
+  <div class="alert alert-warning" id="delete-email" hidden>
+    Deleting an email is permanent. Are you sure?
+    <a class="alert-link" onclick="deleteEmail('{{ email.id}}')">Yes I want to delete this email</a>
+  </div>
+
+  <div class="alert alert-danger" id="error-deleting" hidden>
+    There was an error deleting your email.
+    <a class="alert-link" onclick="deleteEmail('{{ email.id}}')">Click here to try again.</a>
+  </div>
+
+</div>
+
+{{#section 'jquery'}}
+<script>
+  function askDeleteEmail() {
+    $('#delete-email').show();
+    $('#error-deleting').hide();
+  };
+
+  function deleteEmail(emailId) {
+    $('#delete-email').hide();
+    $('#error-deleting').hide();
+
+    $.ajax({
+      url: '/api/v1/mail',
+      method: 'DELETE',
+      data: { mailId: emailId },
+      success: function(result) {
+        console.log(result);
+        if (result.success) {
+          window.location.href = "/inbox";
+        } else {
+          $('#error-deleting').show();
+        }
+      }
+    });
+  };
+</script>
+{{/section}}

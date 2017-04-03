@@ -1,13 +1,12 @@
-<div class="container">
+<link rel="stylesheet" href="/css/landing.css"/>
 
-  <h1>Bienvenido al sistema de calificaciones</h1>
-
-  {{#if loggedIn}}
-    <a href="/calificaciones" class="btn btn-primary">Ver mis calificaciones</a>
-    <a href="/logout" class="btn btn-primary">Cerrar sesión</a>
-    <a href="/materia/new" class="btn btn-primary">Agregar materia</a>
-  {{else}}
-    <a href="/login" class="btn btn-primary">Login</a>
-    <a href="/signup" class="btn btn-primary">Signup</a>
-  {{/if}}
+<div class="main-banner">
+  <div class="container">
+    <div class="row">
+      <h1 class="col-xs-6 col-xs-offset-3 text-center">LGW</h1>
+    </div>
+    <div class="row">
+      <h4 class="col-xs-6 col-xs-offset-3 text-center">Un cliente web basado en HTTP con Machine Learning</h4>
+    </div>
+  </div>
 </div>

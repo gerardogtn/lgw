@@ -1,0 +1,8 @@
+CREATE TABLE Usuarios(
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  name TEXT NOT NULL,
+  username VARCHAR(30) NOT NULL,
+  password TEXT NOT NULL,
+
+  CONSTRAINT uq_username UNIQUE(username)
+);

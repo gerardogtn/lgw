@@ -1,0 +1,80 @@
+<div class="container">
+  <h3>New email</h3>
+  <form>
+
+    <div class="form-group" hidden="hidden">
+      <label for="reply-id">Replying to:</label>
+      {{#if reply-id}}
+        <input class="form-control" type="text" id="reply-id" value="{{ reply-id }}"></input>
+      {{else}}
+        <input class="form-control" type="text" id="reply-id" value="null"></input>
+      {{/if}}
+
+    </div>
+
+    <div class="form-group">
+      <label for="destination">To:</label>
+      <input class="form-control" type="text" id="destination" required="required" placeholder="ironman@lgw.com"></input>
+    </div>
+
+    <div class="form-group">
+      <label for="subject">Subject:</label>
+      <input class="form-control" type="text" id="subject" required="required" placeholder="Hello there"></input>
+    </div>
+
+    <div class="form-group">
+      <label for="content">Content:</label>
+      <textarea rows="10" class="form-control" type="text" id="content" required="required" placeholder="Write your message here"></textarea>
+    </div>
+  </form>
+
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="sendEmail()">Send</button>
+    <button class="btn btn-warning" onclick="onDiscardClick()">Discard</button>
+  </div>
+
+  <div class="alert alert-warning" id="msg-confirm-discard" hidden="hidden">
+    Are you sure you want to discard the email?
+    <a href="/inbox" class="alert-link">Yes, discard the email</a>
+  </div>
+
+  <div class="alert alert-danger" id="msg-error-sending-email" hidden="hidden">
+    We couldn't send your email :( Do you want to try again?
+    <a class="alert-link">Try again</a>
+  </div>
+
+</div>
+
+{{#section 'jquery'}}
+  <script>
+    function onDiscardClick() {
+      $('#msg-confirm-discard').show();
+      $('#msg-error-sending-email').hide();
+    }
+
+    function sendEmail() {
+      $('#msg-confirm-discard').hide();
+      $('#msg-error-sending-email').hide();
+
+      var destination = $('#destination').val();
+      var subject = $('#subject').val();
+      var content = $('#content').val();
+      var replyTo = $('#reply-id').val();
+
+      $.post('/api/v1/mail',
+        { receiver: destination,
+          subject: subject,
+          content: content,
+          repliedTo: replyTo,
+        },
+        function(data) {
+          if (data.success) {
+            window.location.href = "/inbox";
+          } else {
+            $('#msg-error-sending-email').hide();
+          }
+        }
+      );
+    }
+  </script>
+{{/section}}

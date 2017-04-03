@@ -9,21 +9,34 @@
 
   <link rel="stylesheet" href="/css/bootstrap.min.css"/>
 </head>
+
 <body>
 	<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
   <script>window.jQuery || document.write('<script src="/vendor/js/jquery-2.1.1.min.js"><\/script>')</script>
+
+  <script>
+    function logout() {
+      $.post("/api/v1/logout",
+        function (data) {
+          window.location.href = '/';
+        }
+      )
+    }
+  </script>
+
   {{{_sections.jquery}}}
 
   <nav class="navbar navbar-default navbar-static-top">
     <div class="navbar-header">
-      <a class="navbar-brand" href="/">LGW</a>
+      <a class="navbar-brand" href="/inbox">
+        <span class="glyphicon glyphicon-user"aria-hidden="true"></span>
+      </a>
     </div>
 
+    <p class="navbar-text">{{ user.name }}</p>
+
     <div class="container">
-      <div class="button-group navbar-right" role="group">
-        <a href="/login" type="button" class="btn btn-default navbar-btn">Log in</a>
-        <a href="/signup" type="button" class="btn btn-default navbar-btn">Sign up</a>
-      </div>
+      <button class="btn btn-default navbar-btn navbar-right" onclick="logout()">Log out</button>
     </div>
   </nav>
 

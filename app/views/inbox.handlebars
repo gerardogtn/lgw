@@ -1,0 +1,39 @@
+<div class="container">
+  <div class="row">
+    {{!-- Menu --}}
+    <div class="col-xs-3">
+      <a href="/compose" class="btn btn-default">Create email</a>
+      <br />
+      <br />
+
+      <ul>
+        <li>Spam</li>
+      </ul>
+    </div>
+
+    {{!-- Main content --}}
+    <div class="col-xs-9">
+      {{#if emails}}
+        {{#each emails}}
+          <div class="table-bordered" onclick="onMailClick('{{ id }}')">
+            <div class="row" style="cursor">
+              <p class="col-xs-6 text-left">{{ sender }}</p>
+              <p class="col-xs-6 text-right"> {{ date}}</p>
+            </div>
+            <p>{{ subject}}</p>
+          </div>
+        {{/each}}
+      {{else}}
+        <h3>Your inbox is empty!</h3>
+      {{/if}}
+    </div>
+</div>
+
+{{#section 'jquery'}}
+<script>
+  function onMailClick(param) {
+    var url = "/mail?id=" + param;
+    window.location.href = url;
+  };
+</script>
+{{/section}}

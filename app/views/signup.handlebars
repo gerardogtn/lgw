@@ -1,68 +1,133 @@
-<form class="container" method="post" action="/signup">
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input id="name" required name="name" placeholder="Name"></input>
+<div class="container">
+  <h4 class="text-center">Sign up</h4>
+  <form method="post" action="/signup">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input required type="text" class="form-control" id="name" placeholder="Name (first and last)"></input>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email address</label>
+      <div class="input-group">
+        <input required type="text" class="form-control" id="email" placeholder="Email"></input>
+          <span class="input-group-addon">@lgw.com</span>
+        </input>
+      </div>
+    </div>
+
+    <div id="msg-email-available" class="alert alert-success" hidden="hidden">
+      This email is available! :D
+    </div>
+
+    <div id="msg-email-unavailable" class="alert alert-danger" hidden="hidden">
+      This emails is unavailable. :(
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input required type="password" class="form-control" id="password" placeholder="Password"></input>
+    </div>
+
+    <div class="form-group">
+      <label for="password-confirmation">Confirm your password</label>
+      <input required type="password" class="form-control" id="password-confirmation" placeholder="Password"></input>
+    </div>
+  </form>
+
+  <div id="msg-password-dont-match" class="alert alert-danger" hidden>
+    The passwords do not match.
   </div>
 
-  <div class="form-group">
-    <label for="lastname">Last name</label>
-    <input id="lastname" required name="lastname" placeholder="Last name"></input>
+  <div id="msg-error-sign-up" class="alert alert-danger" hidden>
+    There was an error signing up
+    <a class="alert-link" onclick="signUp(event)">Try again</a>
   </div>
 
-  <div class="form-group">
-    <label for="username">Username</label>
-    <input id="username" required name="username" placeholder="Username"></input>
-  </div>
+  <button class="btn btn-default" onclick="signUp(event)">Submit</button>
 
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input id="password" required name="password" placeholder="Password" type="password"></input>
-  </div>
-
-  <button type="submit" class="btn btn-default" onclick="sending(event)">Sign up</button>
-</form>
-
-<div id="cannot" class="alert alert-dismissable" hidden="hidden">
-  <button type="button" class="close" data-dismiss="alert"></button>
-  <p>Cannot sign up</p>
-</div>
-
-<div id="error" class="alert alert-dismissable" hidden="hidden">
-  <button type="button" class="close" data-dismiss="alert"></button>
-  <p>There was an error</p>
 </div>
 
 {{#section 'jquery'}}
-<script>
-  function sending(evt){
-		evt.preventDefault(); // Avoid redirection.
-		var action = "/signup";
+<script type="text/javascript">
+  $(document).ready(function() {
+    var usernameInputTimer;
+    var passwordConfirmationInputTimer;
+
+    $("#email").keyup(function(e) {
+      clearTimeout(usernameInputTimer);
+      usernameInputTimer = setTimeout(checkUsername, 1000);
+    });
+
+    $("#password-confirmation").keyup(function(e) {
+      clearTimeout(passwordConfirmationInputTimer);
+      passwordConfirmationInputTimer = setTimeout(checkPassword, 1000);
+    });
+
+    function checkPassword() {
+      var password = $("#password").val();
+      var passwordConfirm = $("#password-confirmation").val();
+
+      if (password !== passwordConfirm) {
+        $("#msg-password-dont-match").show();
+      } else {
+        $("#msg-password-dont-match").hide();
+      }
+    }
+
+    function checkUsername() {
+      var username = $("#email").val();
+      $.post('/api/v1/username/available',
+        {username: username},
+        function(data) {
+          console.log(data);
+          if (data.success) {
+            if (data.available) {
+              $('#msg-email-available').show();
+              $('#msg-email-unavailable').hide();
+            } else {
+              $('#msg-email-available').hide();
+              $('#msg-email-unavailable').show();
+            }
+          } else {
+            $('#msg-email-available').hide();
+            $('#msg-email-unavailable').hide();
+          }
+        }
+      );
+    }
+
+
+
+  });
+
+  function signUp(evt) {
+    evt.preventDefault();
+
+    $("#msg-error-sign-up").hide();
 
     var name = $('#name').val();
-    var lastname = $('#lastname').val();
-    var username = $('#username').val();
+    var username = $('#email').val();
     var password = $('#password').val();
-		$.ajax({
-			type: 'POST',
-			url: action,
-			dataType: 'json',
-      data: {name: name, lastname:lastname, username: username, password: password},
 
-			success: function(data){
-				if(data.status){
-					window.location.href = "/";
-				} else {
-          $('#cannot').show();
-          $('#error').hide();
-				}
-			},
-			error: function(){
-				console.log("ERROR");
-        $('#error').show();
-        $('#cannot').hide();
-			}
-		});
-	}
+    $.post("/api/v1/user",
+      {name: name, username: username, password: password},
+      function(data) {
+        if (data.success) {
+          $.post("/api/v1/login"),
+          {username: username, password: password},
+          function (data) {
+            if (data.success) {
+              window.location.href="/inbox";
+            } else {
+              window.location.href="/login";
+            }
+          }
+        } else {
+          $("#msg-error-sign-up").show();
+        }
+      }
+    );
+
+  }
 </script>
-
 {{/section}}
